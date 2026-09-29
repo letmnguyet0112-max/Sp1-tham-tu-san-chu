@@ -12,7 +12,7 @@ for(const name of existing){
   if(!res.ok) throw new Error('existing '+name+': '+res.status);
   await fs.writeFile(path.join(audioDir,name),Buffer.from(await res.arrayBuffer()));
 }
-const newAssets={'yeah.mp3':"https://dnznrvs05pmza.cloudfront.net/text_to_speech/5d9a7857-146d-4988-9133-7d891790fe80/SP1_Yeah_Dung_roi.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNTU2NjA4NWEyMzk3NDU3NSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDc5MTc3MH0.k0HbAsNrdvCDnwon5wgK3qtNSuKVBCCxFVHL18Zlkn0"};
+const newAssets={'yeah.mp3':"https://dnznrvs05pmza.cloudfront.net/text_to_speech/5d9a7857-146d-4988-9133-7d891790fe80/SP1_Yeah_Dung_roi.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNTU2NjA4NWEyMzk3NDU3NSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDc5MTc3MH0.k0HbAsNrdvCDnwon5wgK3qtNSuKVBCCxFVHL18Zlkn0",'applause.mp3':"https://dnznrvs05pmza.cloudfront.net/audio_sfx/416e3a5d-79df-46b3-b81f-a6dd9086f8a1/SP1_Vo_tay_chuc_mung.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZTM5NjkyMDgxYTdmM2E3ZSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDc0NzAxNn0.Sj5Nh0XAX-z0ETe8OyvxfxjcLZ7zpf9yV8T58vDfWXk"};
 for(const [name,url] of Object.entries(newAssets)){
   const res=await fetch(url);
   if(!res.ok) throw new Error('new '+name+': '+res.status);
