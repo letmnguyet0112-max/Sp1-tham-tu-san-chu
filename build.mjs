@@ -1,21 +1,21 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 const root=process.cwd(),out=path.join(root,'dist'),audioDir=path.join(out,'audio');
-await fs.rm(out,{recursive:true,force:true}); await fs.mkdir(audioDir,{recursive:true});
+await fs.rm(out,{recursive:true,force:true});
+await fs.mkdir(audioDir,{recursive:true});
 await fs.copyFile(path.join(root,'index.html'),path.join(out,'index.html'));
-const assets={
-'intro.mp3':'https://dnznrvs05pmza.cloudfront.net/text_to_speech/d87903de-f48e-4126-a000-be00479f7532/SP1_00_Mo_dau.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNjE1MmRlZTdhNjg0ZTA2OSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDY3Mzc2N30.N10nhIO8-e7xsEXX2Hbx_vAzinTsXWh6C839LtwKyao',
-'task1.mp3':'https://dnznrvs05pmza.cloudfront.net/text_to_speech/c30a5943-5d3b-40b3-9767-7a181dfc6f60/SP1_01_Nhiem_vu_1.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYTQyY2I4MzU3MDRmYWM1ZCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDY4ODU2NX0.jO1S8vzbIAl3q1FMPwWvhJtgFbjqiJuhwtJcrl2aaxc',
-'task2.mp3':'https://dnznrvs05pmza.cloudfront.net/text_to_speech/5ae0f0d3-a896-4c2b-a193-c35d4beb0396/SP1_02_Nhiem_vu_2.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMDRkMTA1ZjZkZDQxYTgyNCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDc0OTgxNH0.EPSsT_kB4TW3RuiCnqIHHying1uuDFeC5XpTcC1tmeY',
-'task3.mp3':'https://dnznrvs05pmza.cloudfront.net/text_to_speech/f8e45796-4133-49fb-9d01-139b2d63f5a7/SP1_03_Nhiem_vu_3.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOTBhZTZhYmM2YTlhZjgxOSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDc1NDQ5Mn0.P9zLxuooQ2mjcX9gzPfwVMwuinsiW9atCZTEoK-A8IQ',
-'task4.mp3':'https://dnznrvs05pmza.cloudfront.net/text_to_speech/98ca1422-6a8c-460c-be62-e747e0dd1d88/SP1_04_Nhiem_vu_4.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMTI3MzlkNjQ3Nzg1OTBiNSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDcyMjAyMH0.XbAY1M4bo6pQPpMWTgiMDu07X9pvFTO0P57XX9qCcv4',
-'task5.mp3':'https://dnznrvs05pmza.cloudfront.net/text_to_speech/418b4f4d-ff22-4e10-a80f-395da94bc377/SP1_05_Nhiem_vu_5.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOTQyM2FhMDNiNjQxZmExYyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDcwOTI1MX0.tXC2du955iKoT12W6VW-XibGHB7Lwlj3UwPTV0begNY',
-'task6.mp3':'https://dnznrvs05pmza.cloudfront.net/text_to_speech/b4c8395b-754f-4243-b7ad-98e08d3bc36d/SP1_06_Nhiem_vu_6.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZDkxNTFmZjZkOTkwZDU2MSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDc0NzUxMH0.yKFLJ5uUYK0HdJkiijoX7Axz5rMVJgzvVJ273bs06kU',
-'task7.mp3':'https://dnznrvs05pmza.cloudfront.net/text_to_speech/3eef1bdf-7119-4132-82e2-f4ef09251f1c/SP1_07_Nhiem_vu_7.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYTgwN2EwNTE0MGI4ZTk3OSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDczOTI4MX0.w7OLpSIFwwrwexZmtiV6ZrnejUop64VeaxyL7LhRWis',
-'task8.mp3':'https://dnznrvs05pmza.cloudfront.net/text_to_speech/b7b3e6f4-5a21-4834-91f8-8a5c151e5f48/SP1_08_Nhiem_vu_8.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNWYyOTY3MWVhYWEwYTg2NCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDY4OTY5NH0.3IQF8FRqYXcAqCKAEPxiwJyS54omy1fSdYOjwEOr38g',
-'correct.mp3':'https://dnznrvs05pmza.cloudfront.net/text_to_speech/0466e622-b053-4340-ae58-bee2e21396b8/SP1_Phan_hoi_dung.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYzBjYjM5N2QyMTFlYjgyYyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDcxMzU5N30.ukRMQrPWA3uZiI1V-bh7XBL9QQXP_QpzPd2K4Q01fVE',
-'retry.mp3':'https://dnznrvs05pmza.cloudfront.net/text_to_speech/876d50e8-bbe2-43a9-97bd-dde45fe56728/SP1_Thu_lai.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMWE4MjM5OWNhZDYyYjRiNSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDY4MTI0NH0.9Dm2BY0xhWibD3XhevyCtpt14ftKsj9kU9fVeqG1OEY',
-'finish.mp3':'https://dnznrvs05pmza.cloudfront.net/text_to_speech/bfb6971e-a996-4d1b-b5a2-6dc765bda195/SP1_Chuc_mung.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMWM4ZjMyNmRhOWIzMWZkMyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDY5ODYwNX0.B220Q8KT_sRBSExV80a4y4kTyi-co1oJqRIyF8k_WYM',
-'success-jingle.mp3':'https://dnznrvs05pmza.cloudfront.net/audio_sfx/5912a48f-f70d-4ff1-a4e3-4eb2751a311f/SP1___Nhac_chuc_mung_tra_loi_dung.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNzc4MjQ4ODJjM2NkNmI5MyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDc1NDk0Nn0.PkT3_kI6ZM17nx5OfuEo1wnVYsFq0aE34qo2qnF69lU',
-'retry-cue.mp3':'https://dnznrvs05pmza.cloudfront.net/audio_sfx/486055db-ccc9-446f-ad94-60154172275b/SP1___Thu_lai_nhe.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiM2YzODQ0NjhmOTI3OWUwMiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDczMjEzNn0.KuUVdNID2wi87UD7wwlIJ3KKX3M5k1cfHF7SefMUKzc'};
-for(const [name,url] of Object.entries(assets)){const res=await fetch(url);if(!res.ok)throw new Error(name+': '+res.status);const buf=Buffer.from(await res.arrayBuffer());await fs.writeFile(path.join(audioDir,name),buf);}
+
+const stableBase='https://letmnguyet0112-max.github.io/Sp1-tham-tu-san-chu/audio/';
+const existing=['intro.mp3','task1.mp3','task2.mp3','task3.mp3','task4.mp3','task5.mp3','task6.mp3','task7.mp3','task8.mp3','correct.mp3','retry.mp3','finish.mp3','success-jingle.mp3','retry-cue.mp3'];
+for(const name of existing){
+  const res=await fetch(stableBase+name);
+  if(!res.ok) throw new Error('existing '+name+': '+res.status);
+  await fs.writeFile(path.join(audioDir,name),Buffer.from(await res.arrayBuffer()));
+}
+const newAssets={'yeah.mp3':"https://dnznrvs05pmza.cloudfront.net/text_to_speech/5d9a7857-146d-4988-9133-7d891790fe80/SP1_Yeah_Dung_roi.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNTU2NjA4NWEyMzk3NDU3NSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDc5MTc3MH0.k0HbAsNrdvCDnwon5wgK3qtNSuKVBCCxFVHL18Zlkn0"};
+for(const [name,url] of Object.entries(newAssets)){
+  const res=await fetch(url);
+  if(!res.ok) throw new Error('new '+name+': '+res.status);
+  await fs.writeFile(path.join(audioDir,name),Buffer.from(await res.arrayBuffer()));
+}
+console.log('Built SP1 with '+(existing.length+Object.keys(newAssets).length)+' audio files.');
