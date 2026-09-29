@@ -19,6 +19,7 @@ jobs:
         with:
           node-version: 20
       - run: npm run build
+      - run: mkdir -p dist/sp4 && cp sp4/index.html dist/sp4/index.html
       - uses: actions/configure-pages@v5
         with:
           enablement: true
