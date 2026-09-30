@@ -40,38 +40,26 @@ linear-gradient(#8edcff 0 58%,#8bcf72 58% 73%,#e9c27d 73% 100%)}
 <div class="world"><div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="hill h1"></div><div class="hill h2"></div><div class="station"></div><main class="wrap" id="app"></main></div>
 <script>
 let screen=0,answered=false,music=true,ctx=null,timer=null,seq=[],voiceOn=true;
-const instructions=[
-"Chào mừng các con đến với Chuyến tàu chữ cái! Mỗi câu trả lời đúng sẽ giúp đoàn tàu tiến thêm một ga nhé!",
-"Con hãy quan sát. Từ MÈO bắt đầu bằng chữ gì?",
-"Con hãy quan sát từ HOA. Chữ nào đứng ở cuối từ?",
-"Ô chữ còn thiếu trong từ CÁ là chữ gì?",
-"Từ nào bắt đầu bằng chữ b?",
-"Từ MŨ bắt đầu bằng chữ gì?",
-"Con hãy chọn lần lượt các chữ H, O, A để tạo thành từ HOA.",
-"Từ nào có chữ a?",
-"Bây giờ mình cùng chơi với thẻ chữ thật nhé! Con hãy đưa các thẻ M, B, C về đúng toa có hình tương ứng."
-];
-function chooseVoice(){
- const vs=speechSynthesis.getVoices();return vs.find(v=>v.lang&&v.lang.toLowerCase().startsWith('vi')&&/female|linh|an|hoai|mai|google/i.test(v.name))||vs.find(v=>v.lang&&v.lang.toLowerCase().startsWith('vi'))||null
-}
-function speak(t){if(!voiceOn||!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='vi-VN';u.rate=.88;u.pitch=1.08;const v=chooseVoice();if(v)u.voice=v;duck(.07);u.onend=()=>duck(.27);u.onerror=()=>duck(.27);speechSynthesis.speak(u)}
+const VOICE={intro:"audio/intro.mp3",t1:"audio/t1.mp3",t2:"audio/t2.mp3",t3:"audio/t3.mp3",t4:"audio/t4.mp3",t5:"audio/t5.mp3",t6:"audio/t6.mp3",t7:"audio/t7.mp3",t8:"audio/t8.mp3",correct:"audio/correct.mp3",retry:"audio/retry.mp3",finish:"audio/finish.mp3"};
+let voiceAudio=null;
+function playVoice(k){if(!voiceOn||!VOICE[k])return;if(voiceAudio){voiceAudio.pause();voiceAudio.currentTime=0}voiceAudio=new Audio(VOICE[k]);duck(.07);const restore=()=>duck(.27);voiceAudio.onended=restore;voiceAudio.onerror=restore;voiceAudio.play().catch(restore)}
 function audioInit(){if(ctx)return;ctx=new (window.AudioContext||window.webkitAudioContext)();ctx.master=ctx.createGain();ctx.master.gain.value=.27;ctx.master.connect(ctx.destination)}
 function duck(v){if(ctx&&ctx.master)ctx.master.gain.setTargetAtTime(music?v:.0001,ctx.currentTime,.08)}
 function tone(f,d=.12,type='sine',vol=.05,delay=0){if(!ctx||!music)return;const o=ctx.createOscillator(),g=ctx.createGain(),t=ctx.currentTime+delay;o.type=type;o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(ctx.master);o.start(t);o.stop(t+d+.03)}
 function rhythm(){if(!ctx||!music)return;[196,247,294,247].forEach((f,i)=>tone(f,.1,'triangle',.035,i*.16));tone(98,.12,'square',.018,0);tone(98,.12,'square',.018,.32)}
 function startMusic(){audioInit();if(ctx.state==='suspended')ctx.resume();if(!timer){rhythm();timer=setInterval(rhythm,1280)}}
 function whistle(){audioInit();[740,880,1047].forEach((f,i)=>tone(f,.18,'sine',.09,i*.12))}
-function ding(){audioInit();[523,659,784].forEach((f,i)=>tone(f,.18,'sine',.10,i*.09));setTimeout(()=>speak("Chính xác! Đoàn tàu tiến thêm một ga rồi!"),250)}
-function wrong(){audioInit();tone(210,.16,'triangle',.055);setTimeout(()=>speak("Con quan sát lại nhé!"),180)}
+function ding(){audioInit();[523,659,784].forEach((f,i)=>tone(f,.18,'sine',.10,i*.09));setTimeout(()=>playVoice("correct"),250)}
+function wrong(){audioInit();tone(210,.16,'triangle',.055);setTimeout(()=>playVoice("retry"),180)}
 function toggleMusic(){music=!music;startMusic();duck(music ? .27 : .0001);render()}
-function toggleVoice(){voiceOn=!voiceOn;if(!voiceOn)speechSynthesis.cancel();render()}
+function toggleVoice(){voiceOn=!voiceOn;if(!voiceOn&&voiceAudio){voiceAudio.pause();voiceAudio.currentTime=0}render()}
 function trainHtml(){const p=Math.min(82,screen/9*82);return '<div class="trackBox"><div class="sleepers"></div><div class="rail"></div><div class="train" style="left:'+p+'%"><div class="smoke">☁️</div><div class="chimney"></div><div class="nose"></div><div class="engine"></div><div class="cab"></div><div class="window"></div><div class="wheel w1"></div><div class="wheel w2"></div><div class="flag">🚩</div></div></div>'}
 function head(){return '<div class="top"><div class="badge">🚂 CHUYẾN TÀU CHỮ CÁI</div><div class="controls"><button class="round" onclick="toggleVoice()" title="Giọng hướng dẫn">'+(voiceOn?'👩‍🏫':'🔇')+'</button><button class="round" onclick="toggleMusic()" title="Nhạc nền">'+(music?'🎵':'🔕')+'</button></div></div><div class="route"><div class="routeFill" style="width:'+Math.min(100,screen/9*100)+'%"></div></div>'+trainHtml()}
 function choice(label,correct,extra=''){return '<button class="choice '+extra+'" onclick="answer(this,'+correct+')">'+label+'</button>'}
 function feedback(){return answered?'<div class="feedback">🚉 Chính xác! Đoàn tàu đã sẵn sàng đi tiếp.</div><button class="next" onclick="next()">TIẾP TỤC →</button>':''}
 function answer(el,ok){if(answered)return;if(ok){answered=true;el.classList.add('correct');ding();whistle();setTimeout(render,650)}else{el.classList.add('wrong');wrong();setTimeout(()=>el.classList.remove('wrong'),500)}}
-function start(){startMusic();whistle();screen=1;answered=false;render();setTimeout(()=>speak(instructions[1]),450)}
-function next(){screen++;answered=false;seq=[];render();if(screen<9)setTimeout(()=>speak(instructions[screen]),420);else{whistle();celebrate();setTimeout(()=>speak("Tuyệt vời! Đoàn tàu đã đến Ga Chữ Cái. Các con đã hoàn thành chuyến đi rồi!"),350)}}
+function start(){startMusic();whistle();screen=1;answered=false;render();setTimeout(()=>playVoice("t1"),450)}
+function next(){screen++;answered=false;seq=[];render();if(screen<9)setTimeout(()=>playVoice("t"+screen),420);else{whistle();celebrate();setTimeout(()=>playVoice("finish"),350)}}
 function pickLetter(ch,el){if(answered)return;seq.push(ch);el.disabled=true;render();if(seq.length===3){if(seq.join('')==='HOA'){answered=true;ding();whistle();setTimeout(render,650)}else{seq=[];wrong();setTimeout(render,600)}}}
 function completePhysical(){if(answered)return;answered=true;ding();whistle();setTimeout(render,650)}
 function celebrate(){for(let i=0;i<28;i++){setTimeout(()=>{let d=document.createElement('div');d.className='confetti';d.textContent=['⭐','🎉','🎈','✨','🚂'][i%5];d.style.left=(3+Math.random()*94)+'%';d.style.animationDuration=(2.5+Math.random()*2)+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),5000)},i*70)}}
@@ -85,7 +73,7 @@ if(screen===5)h+='<section class="scene"><div class="question">Từ <span class=
 if(screen===6){const slots=[0,1,2].map(i=>'<div class="slot">'+(seq[i]||'')+'</div>').join('');h+='<section class="scene"><div class="question">Chọn lần lượt các chữ để tạo thành từ <span class="focus">HOA</span>.</div><div class="picture">🌼</div><div class="slots">'+slots+'</div><div class="arrange"><button onclick="pickLetter(\'O\',this)" '+(seq.includes('O')?'disabled':'')+'>O</button><button onclick="pickLetter(\'A\',this)" '+(seq.includes('A')?'disabled':'')+'>A</button><button onclick="pickLetter(\'H\',this)" '+(seq.includes('H')?'disabled':'')+'>H</button></div>'+feedback()+'</section>'}
 if(screen===7)h+='<section class="scene"><div class="question">Từ nào có chữ <span class="focus">A</span>?</div><div class="choices">'+choice('<span class="emoji">🐟</span><small>CÁ</small>',true,'picChoice')+choice('<span class="emoji">🧢</span><small>MŨ</small>',false,'picChoice')+choice('<span class="emoji">🐱</span><small>MÈO</small>',false,'picChoice')+'</div>'+feedback()+'</section>';
 if(screen===8)h+='<section class="scene"><div class="question">GA HOẠT ĐỘNG THẬT 🚉</div><div class="physical">Cô chuẩn bị 3 thẻ chữ. Bé cầm từng thẻ và đưa về đúng “toa tàu” có hình tương ứng:<div class="cardsRow"><div class="letterCard">M</div><div class="letterCard">B</div><div class="letterCard">C</div></div><b>M → MÈO 🐱 &nbsp; • &nbsp; B → BÓNG ⚽ &nbsp; • &nbsp; C → CÁ 🐟</b><br><br>Sau khi bé hoàn thành, cô bấm nút bên dưới.</div>'+(answered?feedback():'<button class="next" onclick="completePhysical()">BÉ ĐÃ HOÀN THÀNH ✓</button>')+'</section>';
-if(screen===9)h+='<section class="scene final"><div class="trophy">🏆🚂</div><h1>ĐÃ ĐẾN GA CHỮ CÁI!</h1><div class="subtitle">Tuyệt vời! Con đã giúp đoàn tàu hoàn thành tất cả các chặng.</div><div style="font-size:58px;margin:18px">⭐ 🌈 ⭐ 🌈 ⭐</div><button class="next" onclick="screen=0;answered=false;seq=[];render();speak(instructions[0])">CHƠI LẠI ↻</button></section>';
+if(screen===9)h+='<section class="scene final"><div class="trophy">🏆🚂</div><h1>ĐÃ ĐẾN GA CHỮ CÁI!</h1><div class="subtitle">Tuyệt vời! Con đã giúp đoàn tàu hoàn thành tất cả các chặng.</div><div style="font-size:58px;margin:18px">⭐ 🌈 ⭐ 🌈 ⭐</div><button class="next" onclick="screen=0;answered=false;seq=[];render();playVoice("intro")">CHƠI LẠI ↻</button></section>';
 document.getElementById('app').innerHTML=h}
-render();setTimeout(()=>speak(instructions[0]),700);
+render();setTimeout(()=>playVoice("intro"),700);
 </script></body></html>
