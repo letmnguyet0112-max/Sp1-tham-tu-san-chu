@@ -43,7 +43,7 @@ let screen=0,answered=false,music=true,ctx=null,timer=null,seq=[],voiceOn=true;
 const instructions=[
 "Chào mừng các con đến với Chuyến tàu chữ cái! Mỗi câu trả lời đúng sẽ giúp đoàn tàu tiến thêm một ga nhé!",
 "Con hãy quan sát. Từ MÈO bắt đầu bằng chữ gì?",
-"Con hãy quan sát từ HOA. Chữ a đứng ở cuối từ. Con chọn chữ a nhé!",
+"Con hãy quan sát từ HOA. Chữ nào đứng ở cuối từ?",
 "Ô chữ còn thiếu trong từ CÁ là chữ gì?",
 "Từ nào bắt đầu bằng chữ b?",
 "Từ MŨ bắt đầu bằng chữ gì?",
@@ -63,7 +63,7 @@ function startMusic(){audioInit();if(ctx.state==='suspended')ctx.resume();if(!ti
 function whistle(){audioInit();[740,880,1047].forEach((f,i)=>tone(f,.18,'sine',.09,i*.12))}
 function ding(){audioInit();[523,659,784].forEach((f,i)=>tone(f,.18,'sine',.10,i*.09));setTimeout(()=>speak("Chính xác! Đoàn tàu tiến thêm một ga rồi!"),250)}
 function wrong(){audioInit();tone(210,.16,'triangle',.055);setTimeout(()=>speak("Con quan sát lại nhé!"),180)}
-function toggleMusic(){music=!music;startMusic();duck(music?.27:.0001);render()}
+function toggleMusic(){music=!music;startMusic();duck(music ? .27 : .0001);render()}
 function toggleVoice(){voiceOn=!voiceOn;if(!voiceOn)speechSynthesis.cancel();render()}
 function trainHtml(){const p=Math.min(82,screen/9*82);return '<div class="trackBox"><div class="sleepers"></div><div class="rail"></div><div class="train" style="left:'+p+'%"><div class="smoke">☁️</div><div class="chimney"></div><div class="nose"></div><div class="engine"></div><div class="cab"></div><div class="window"></div><div class="wheel w1"></div><div class="wheel w2"></div><div class="flag">🚩</div></div></div>'}
 function head(){return '<div class="top"><div class="badge">🚂 CHUYẾN TÀU CHỮ CÁI</div><div class="controls"><button class="round" onclick="toggleVoice()" title="Giọng hướng dẫn">'+(voiceOn?'👩‍🏫':'🔇')+'</button><button class="round" onclick="toggleMusic()" title="Nhạc nền">'+(music?'🎵':'🔕')+'</button></div></div><div class="route"><div class="routeFill" style="width:'+Math.min(100,screen/9*100)+'%"></div></div>'+trainHtml()}
