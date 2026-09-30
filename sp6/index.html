@@ -33,9 +33,9 @@ function duck(v){if(ctx&&ctx.master)ctx.master.gain.setTargetAtTime(music?v:.000
 function playVoice(k){if(!voiceOn||!VOICE[k])return;if(voiceAudio){voiceAudio.pause();voiceAudio.currentTime=0}voiceAudio=new Audio(VOICE[k]);duck(.05);const restore=()=>duck(.25);voiceAudio.onended=restore;voiceAudio.onerror=restore;voiceAudio.play().catch(restore)}
 function sparkle(){audioInit();[659,784,988,1318].forEach((f,i)=>tone(f,.16,'sine',.08,i*.08))}
 function softWrong(){audioInit();tone(230,.18,'triangle',.05)}
-function toggleMusic(){music=!music;startMusic();duck(music?.25:.0001);render()}
+function toggleMusic(){music=!music;startMusic();duck(music ? .25 : .0001);render()}
 function toggleVoice(){voiceOn=!voiceOn;if(!voiceOn&&voiceAudio){voiceAudio.pause();voiceAudio.currentTime=0}render()}
-function mapHtml(){let dots='';for(let i=1;i<=8;i++)dots+='<div class="dot '+(i<screen?'done':i===screen?'now':'')+'">'+(i<screen?'✓':i)+'</div>';let ks='';for(let i=1;i<screen&&i<=8;i++)ks+='<span class="keyIcon">🔑</span>';return '<div class="map"><div class="path">'+dots+'</div><div class="keys">'+ks+' '+Math.max(0,screen-1)+'/8</div></div>'}
+function mapHtml(){let dots='';for(let i=1;i<=8;i++)dots+='<div class="dot '+(i<screen?'done':i===screen?'now':'')+'">'+(i<screen?'✓':i)+'</div>';let ks='';const keyCount=Math.min(8,Math.max(0,screen-1)+(answered?1:0));for(let i=1;i<=keyCount;i++)ks+='<span class="keyIcon">🔑</span>';return '<div class="map"><div class="path">'+dots+'</div><div class="keys">'+ks+' '+keyCount+'/8</div></div>'}
 function head(){return '<div class="top"><div class="brand">🏝️ KHO BÁU CHỮ VIẾT</div><div class="controls"><button class="round" onclick="toggleVoice()">'+(voiceOn?'👩‍🏫':'🔇')+'</button><button class="round" onclick="toggleMusic()">'+(music?'🪘':'🔕')+'</button></div></div>'+mapHtml()}
 function choice(label,ok,extra=''){return '<button class="choice '+extra+'" onclick="answer(this,'+ok+')">'+label+'</button>'}
 function feedback(){return answered?'<div class="feedback">🔑 Chính xác! Con đã tìm được một chìa khóa kho báu.</div><button class="next" onclick="next()">ĐI TIẾP →</button>':''}
